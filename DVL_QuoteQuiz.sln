@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVL_QuoteQuiz.WebUI", "DVL_QuoteQuiz.WebUI\DVL_QuoteQuiz.WebUI.csproj", "{B246E478-EA43-4197-8CC3-75B971C138F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVL_QuoteQuiz.Domain", "DVL_QuoteQuiz.Domain\DVL_QuoteQuiz.Domain.csproj", "{90DF863F-6FA1-4EC2-92E4-C613D35C3178}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B246E478-EA43-4197-8CC3-75B971C138F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B246E478-EA43-4197-8CC3-75B971C138F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B246E478-EA43-4197-8CC3-75B971C138F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B246E478-EA43-4197-8CC3-75B971C138F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90DF863F-6FA1-4EC2-92E4-C613D35C3178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90DF863F-6FA1-4EC2-92E4-C613D35C3178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90DF863F-6FA1-4EC2-92E4-C613D35C3178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90DF863F-6FA1-4EC2-92E4-C613D35C3178}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {956BF048-D89D-4AA2-A3C0-71DF39F233D6}
+	EndGlobalSection
+EndGlobal
