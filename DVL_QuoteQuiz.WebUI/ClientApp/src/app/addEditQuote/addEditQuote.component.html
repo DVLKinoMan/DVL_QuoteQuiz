@@ -1,0 +1,78 @@
+<h1>Add Quote</h1>
+
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12">
+          <button type="submit"
+                  class="btn btn-success"
+                  [disabled]="!quoteForm.valid">
+            Save
+          </button>
+          <button type="button" class="btn btn-danger" (click)="onCancel()">
+            Cancel
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="quoteText">Quote Text</label>
+            <textarea type="text"
+                      id="quoteText"
+                      class="form-control"
+                      formControlName="quoteText"
+                      rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12" formArrayName="answers">
+          <div class="row"
+               *ngFor="let answer of answersControls; let i = index"
+               [formGroupName]="i"
+               style="margin-top: 10px;">
+
+            <div formGroupName="author">
+              <div class="col-xs-2">
+                Author Id:
+                <input type="number"
+                       class="form-control"
+                       formControlName="id" />
+              </div>
+              <div class="col-xs-8">
+                Author Name:
+                <input type="text" class="form-control" formControlName="fullName" />
+              </div>
+            </div>
+              <div class="col-xs-2">
+                Is Right Answer:
+                <input type="checkbox"
+                       class="form-control"
+                       formControlName="isRightAnswer" />
+              </div>
+              <div class="col-xs-2">
+                Delete:
+                <button type="button"
+                        class="form-control btn btn-danger"
+                        (click)="onDeleteAnswer(i)">
+                  X
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-xs-12">
+                <button type="button"
+                        class="btn btn-success"
+                        (click)="onAddAnswer()">
+                  Add Answer
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </form>
+  </div>
+</div>

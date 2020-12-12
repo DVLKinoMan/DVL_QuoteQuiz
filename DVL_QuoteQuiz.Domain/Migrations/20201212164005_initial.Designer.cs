@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DVL_QuoteQuiz.Domain.Migrations
 {
     [DbContext(typeof(QuotesQuizContext))]
-    [Migration("20201211201413_Initial")]
-    partial class Initial
+    [Migration("20201212164005_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,6 +89,9 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()

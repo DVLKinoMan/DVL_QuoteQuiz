@@ -1,7 +1,8 @@
+using DVL_QuoteQuiz.Domain.Abstract;
+using DVL_QuoteQuiz.Domain.Concrete;
 using DVL_QuoteQuiz.Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,8 @@ namespace DVL_QuoteQuiz.WebUI
 {
     public class Startup
     {
+        //readonly string MyAllowSpecificOrigins = "sdfasd";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,14 +22,23 @@ namespace DVL_QuoteQuiz.WebUI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<QuotesQuizContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("QuotesQuizContext")));
 
+            services.AddScoped<IQuotesRepository, QuotesRepository>();
+
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("http://localhost:44340");
+            //        });
+            //});
+
             services.AddControllersWithViews();
-            // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
@@ -47,6 +59,8 @@ namespace DVL_QuoteQuiz.WebUI
                 app.UseHsts();
             }
 
+            //app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod());
+            //app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())

@@ -17,6 +17,6 @@ namespace DVL_QuoteQuiz.Domain.Models
 
         [Required] [Column(Order = 3)] public bool IsDeleted { get; set; } = false;
 
-        public ICollection<QuoteAnswer> QuoteAnswers { get; set; }
+        public IList<QuoteAnswer> QuoteAnswers { get; set; }
     }
 }
