@@ -24,7 +24,7 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Required]
         [Column(Order = 3)]
         [MaxLength(254)]
-        public string Email { get; set; }
+        public string Email { get; set; } = default!;
 
         [Column(Order = 4)]
         public Gender? Gender { get; set; }

@@ -11,12 +11,10 @@ namespace DVL_QuoteQuiz.Domain.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [Column(Order = 2)]
-        public string Text { get; set; }
+        [Required] [Column(Order = 2)] public string Text { get; set; } = default!;
 
         [Required] [Column(Order = 3)] public bool IsDeleted { get; set; } = false;
 
-        public IList<QuoteAnswer> QuoteAnswers { get; set; }
+        public IList<QuoteAnswer> QuoteAnswers { get; set; } = default!;
     }
 }

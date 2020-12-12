@@ -14,8 +14,7 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Column(Order = 2)]
         public int GameId { get; set; }
 
-        [ForeignKey("GameId")]
-        public Game Game { get; set; }
+        [ForeignKey("GameId")] public Game Game { get; set; } = default!;
 
         [Required]
         [Column(Order = 3)]

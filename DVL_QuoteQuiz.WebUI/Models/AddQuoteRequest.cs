@@ -14,9 +14,7 @@ namespace DVL_QuoteQuiz.WebUI.Models
 
     public class QuoteAnswerViewModel
     {
-        [Required]
-	    [QuoteAuthor]
-        public QuoteAuthor Author { get; set; }
+        [Required] [QuoteAuthor] public QuoteAuthor Author { get; set; } = default!;
 
         public bool IsRightAnswer { get; set; } = false;
     }

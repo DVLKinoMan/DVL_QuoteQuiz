@@ -15,8 +15,7 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Column(Order = 2)]
         public int UserId { get; set; }
 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        [ForeignKey("UserId")] public User User { get; set; } = default!;
 
         [Required] 
         [Column(Order = 3)] 
@@ -26,6 +25,6 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Column(Order = 4)]
         public int CorrectAnswersCount { get; set; }
 
-        public ICollection<GameAnswer> GameAnswers { get; set; }
+        public IList<GameAnswer> GameAnswers { get; set; } = default!;
     }
 }
