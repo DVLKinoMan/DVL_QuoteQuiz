@@ -46,14 +46,21 @@ namespace DVL_QuoteQuiz.Domain.Concrete
             await _context.SaveChangesAsync();
         }
 
-        private async Task<Quote> GetAsync(int quoteId) =>
+        public async Task<Dictionary<int, int>> GetIdsAndAuthorsAsync(bool includeDeleted = false) =>
+            (await (from q in _context.Quotes.Where(q => includeDeleted || !q.IsDeleted)
+                join ans in _context.QuoteAnswers on q.Id equals ans.QuoteId
+                where ans.IsRightAnswer
+                select new {q.Id, ans.AuthorId}).ToListAsync())
+            .ToDictionary(q => q.Id, q => q.AuthorId);
+
+        public async Task<Quote> GetAsync(int quoteId) =>
             await _context.Quotes.FirstOrDefaultAsync(q => q.Id == quoteId && q.IsDeleted == false) switch
             {
                 { } q => q,
                 _ => throw new ArgumentException("Quote was not found with the given Id", nameof(quoteId))
             };
 
-        private async Task<Quote> GetDetailedAsync(int quoteId) =>
+        public async Task<Quote> GetDetailedAsync(int quoteId) =>
             await _context.Quotes
                     .Include("QuoteAnswers")
                     .Include("QuoteAnswers.Author")

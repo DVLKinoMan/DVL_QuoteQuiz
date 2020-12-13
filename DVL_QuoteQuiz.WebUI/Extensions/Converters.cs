@@ -46,5 +46,14 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
             _ => throw new InvalidOperationException("Author id or name should not be null")
         };
 
+        public static IEnumerable<InGameAnswer> ToInGameAnswers(this IEnumerable<QuoteAnswer> qAnswers) =>
+            qAnswers.Select(q => q.ToInGameAnswer());
+
+        public static InGameAnswer ToInGameAnswer(this QuoteAnswer q) => new InGameAnswer
+        {
+            AuthorId = q.AuthorId,
+            AuthorName = q.Author.Name
+        };
+
     }
 }

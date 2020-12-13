@@ -1,0 +1,19 @@
+<h1>Quiz Game</h1>
+<hr />
+<h1>Who Said It?</h1>
+<textarea>{{currentQuote.text}}</textarea>
+<div *ngIf="multipleAnswersQuiz; else YesNoQuestion">
+  <button type="button" class="btn btn-success">{{currentQuote.answers[0].authorName}}</button>
+  <button type="button" class="btn btn-success">{{currentQuote.answers[1].authorName}}</button>
+  <button type="button" class="btn btn-success">{{currentQuote.answers[2].authorName}}</button>
+</div>
+<ng-template #YesNoQuestion>
+  <p>{{currentQuote.answers[0].authorName}}?</p>
+
+  <button type="button" class="btn btn-success" (click)="onClickYes()">
+    Yes
+  </button>
+  <button type="button" class="btn btn-danger" (click)="onClickNo()">
+    No
+  </button>
+</ng-template>

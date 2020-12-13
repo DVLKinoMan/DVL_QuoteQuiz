@@ -28,6 +28,7 @@ namespace DVL_QuoteQuiz.WebUI
                 options.UseSqlServer(Configuration.GetConnectionString("QuotesQuizContext")));
 
             services.AddScoped<IQuotesRepository, QuotesRepository>();
+            services.AddScoped<IAuthorsRepository, AuthorsRepository>();
 
             //services.AddCors(options =>
             //{

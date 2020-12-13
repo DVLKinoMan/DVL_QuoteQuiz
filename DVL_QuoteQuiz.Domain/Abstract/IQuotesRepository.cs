@@ -10,10 +10,16 @@ namespace DVL_QuoteQuiz.Domain.Abstract
 
         Task<List<Quote>> ListAsync(int itemsPerPage = 10, int currentPageNumber = 1, bool showDeleted = false);
 
+        Task<Dictionary<int, int>> GetIdsAndAuthorsAsync(bool includeDeleted = false);
+
         Task DeleteAsync(int quoteId);
 
         Task DeleteAsync(Quote quote);
 
         Task EditAsync(Quote quote);
+
+        Task<Quote> GetAsync(int quoteId);
+
+        Task<Quote> GetDetailedAsync(int quoteId);
     }
 }
