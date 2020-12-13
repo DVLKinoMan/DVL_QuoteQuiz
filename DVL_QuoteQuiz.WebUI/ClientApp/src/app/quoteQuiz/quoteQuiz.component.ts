@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { InGameQuote, InGameAnswer } from "./quoteQuizGame.model";
 import { ActivatedRoute, Params } from "@angular/router";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { CookieService } from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-quoteQuiz-component',
@@ -19,14 +20,14 @@ export class QuoteQuizComponent implements OnInit {
   gameHasEnded: boolean = false;
 
   constructor(
-    private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private cookieService: CookieService) {
     
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      this.multipleAnswersQuiz = params['multipleAnswers'] == null;
-    });
+    var cookie = this.cookieService.get('multipleAnswersQuiz');
+    if (cookie)
+      this.multipleAnswersQuiz = cookie == "true";
     this.getQuote();
   }
 

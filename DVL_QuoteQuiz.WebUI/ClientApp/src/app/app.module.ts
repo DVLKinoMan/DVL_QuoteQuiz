@@ -10,6 +10,8 @@ import { HomeComponent } from './home/home.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { AddEditQuoteComponent } from "./addEditQuote/addEditQuote.component";
 import { QuoteQuizComponent } from './quoteQuiz/quoteQuiz.component';
+import { CookieService } from 'ngx-cookie-service';
+import { SettingsComponent } from "./settings/settings.component";
 
 @NgModule({
   declarations: [
@@ -17,6 +19,7 @@ import { QuoteQuizComponent } from './quoteQuiz/quoteQuiz.component';
     NavMenuComponent,
     HomeComponent,
     AddEditQuoteComponent,
+    SettingsComponent,
     QuoteQuizComponent,
     FetchDataComponent
   ],
@@ -29,10 +32,11 @@ import { QuoteQuizComponent } from './quoteQuiz/quoteQuiz.component';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'addQuote', component: AddEditQuoteComponent },
       { path: 'quoteQuiz', component: QuoteQuizComponent },
+      { path: 'settings', component: SettingsComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
