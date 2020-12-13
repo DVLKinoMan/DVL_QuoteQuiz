@@ -18,7 +18,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
             viewModel.Select(mod => mod.ToQuoteAnswer());
 
         public static QuoteAnswer ToQuoteAnswer(this QuoteAnswerViewModel viewModel)
-        { 
+        {
             var answer = new QuoteAnswer
             {
                 IsRightAnswer = viewModel.IsRightAnswer,
@@ -26,7 +26,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
 
             switch (viewModel.Author)
             {
-                case { Id: { } id } :
+                case { Id: { } id }:
                     answer.AuthorId = id;
                     break;
                 case { FullName: { } name }:
@@ -38,11 +38,11 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
 
             return answer;
         }
-           
+
         public static Author ToAuthor(this QuoteAuthor author) => author switch
         {
             { Id: { } id } => new Author {Id = id},
-            { FullName: { } name } => new Author() { Name = name },
+            { FullName: { } name } => new Author() {Name = name},
             _ => throw new InvalidOperationException("Author id or name should not be null")
         };
 
@@ -54,6 +54,24 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
             AuthorId = q.AuthorId,
             AuthorName = q.Author.Name
         };
+
+        public static InGameAnswer ToInGameAnswer(this Author author) => new InGameAnswer
+        {
+            AuthorId = author.Id,
+            AuthorName = author.Name
+        };
+
+        public static UserAnsweredQuote ToUserAnsweredQuote(this InGameQuote inGameQuote, int userId,
+            bool answeredRight) =>
+            new UserAnsweredQuote
+            {
+                AnsweredAuthorId = inGameQuote.AnsweredAuthorId,
+                QuoteId = inGameQuote.Id,
+                UserId = userId,
+                YesNoQuestion = inGameQuote.AnswersCount == 1,
+                AnsweredDateTime = DateTime.Now,
+                AnsweredRight = answeredRight
+            };
 
     }
 }

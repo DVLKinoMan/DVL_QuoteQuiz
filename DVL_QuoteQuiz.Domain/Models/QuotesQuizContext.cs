@@ -12,7 +12,6 @@ namespace DVL_QuoteQuiz.Domain.Models
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<QuoteAnswer> QuoteAnswers { get; set; }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<Game> Games { get; set; }
-        public DbSet<GameAnswer> GameAnswers { get; set; }
+        public DbSet<UserAnsweredQuote> UserAnsweredQuotes { get; set; }
     }
 }

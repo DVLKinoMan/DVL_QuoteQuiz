@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DVL_QuoteQuiz.Domain.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -80,66 +80,40 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "UserAnsweredQuotes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    QuoteId = table.Column<int>(type: "int", nullable: false),
+                    AnsweredAuthorId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    QuestionsCount = table.Column<int>(type: "int", nullable: false),
-                    CorrectAnswersCount = table.Column<int>(type: "int", nullable: false)
+                    YesNoQuestion = table.Column<bool>(type: "bit", nullable: false),
+                    AnsweredRight = table.Column<bool>(type: "bit", nullable: false),
+                    AnsweredDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_UserAnsweredQuotes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Games_Users_UserId",
+                        name: "FK_UserAnsweredQuotes_Authors_AnsweredAuthorId",
+                        column: x => x.AnsweredAuthorId,
+                        principalTable: "Authors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserAnsweredQuotes_Quotes_QuoteId",
+                        column: x => x.QuoteId,
+                        principalTable: "Quotes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserAnsweredQuotes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "GameAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    QuoteAnswerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameAnswers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GameAnswers_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GameAnswers_QuoteAnswers_QuoteAnswerId",
-                        column: x => x.QuoteAnswerId,
-                        principalTable: "QuoteAnswers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GameAnswers_GameId",
-                table: "GameAnswers",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GameAnswers_QuoteAnswerId",
-                table: "GameAnswers",
-                column: "QuoteAnswerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Games_UserId",
-                table: "Games",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuoteAnswers_AuthorId",
@@ -150,27 +124,39 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                 name: "IX_QuoteAnswers_QuoteId",
                 table: "QuoteAnswers",
                 column: "QuoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAnsweredQuotes_AnsweredAuthorId",
+                table: "UserAnsweredQuotes",
+                column: "AnsweredAuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAnsweredQuotes_QuoteId",
+                table: "UserAnsweredQuotes",
+                column: "QuoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAnsweredQuotes_UserId",
+                table: "UserAnsweredQuotes",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GameAnswers");
-
-            migrationBuilder.DropTable(
-                name: "Games");
-
-            migrationBuilder.DropTable(
                 name: "QuoteAnswers");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "UserAnsweredQuotes");
 
             migrationBuilder.DropTable(
                 name: "Authors");
 
             migrationBuilder.DropTable(
                 name: "Quotes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

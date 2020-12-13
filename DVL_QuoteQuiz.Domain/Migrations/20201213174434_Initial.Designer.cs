@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DVL_QuoteQuiz.Domain.Migrations
 {
     [DbContext(typeof(QuotesQuizContext))]
-    [Migration("20201212164005_initial")]
-    partial class initial
+    [Migration("20201213174434_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,51 +36,6 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.Game", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("CorrectAnswersCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionsCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.GameAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuoteAnswerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("QuoteAnswerId");
-
-                    b.ToTable("GameAnswers");
                 });
 
             modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.Quote", b =>
@@ -164,34 +119,40 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.Game", b =>
+            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.UserAnsweredQuote", b =>
                 {
-                    b.HasOne("DVL_QuoteQuiz.Domain.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Navigation("User");
-                });
+                    b.Property<int?>("AnsweredAuthorId")
+                        .HasColumnType("int");
 
-            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.GameAnswer", b =>
-                {
-                    b.HasOne("DVL_QuoteQuiz.Domain.Models.Game", "Game")
-                        .WithMany("GameAnswers")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<DateTime>("AnsweredDateTime")
+                        .HasColumnType("datetime2");
 
-                    b.HasOne("DVL_QuoteQuiz.Domain.Models.QuoteAnswer", "QuoteAnswer")
-                        .WithMany()
-                        .HasForeignKey("QuoteAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<bool>("AnsweredRight")
+                        .HasColumnType("bit");
 
-                    b.Navigation("Game");
+                    b.Property<int>("QuoteId")
+                        .HasColumnType("int");
 
-                    b.Navigation("QuoteAnswer");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("YesNoQuestion")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnsweredAuthorId");
+
+                    b.HasIndex("QuoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAnsweredQuotes");
                 });
 
             modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.QuoteAnswer", b =>
@@ -213,14 +174,39 @@ namespace DVL_QuoteQuiz.Domain.Migrations
                     b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.Game", b =>
+            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.UserAnsweredQuote", b =>
                 {
-                    b.Navigation("GameAnswers");
+                    b.HasOne("DVL_QuoteQuiz.Domain.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AnsweredAuthorId");
+
+                    b.HasOne("DVL_QuoteQuiz.Domain.Models.Quote", "Quote")
+                        .WithMany()
+                        .HasForeignKey("QuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DVL_QuoteQuiz.Domain.Models.User", "User")
+                        .WithMany("AnsweredQuotes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Quote");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.Quote", b =>
                 {
                     b.Navigation("QuoteAnswers");
+                });
+
+            modelBuilder.Entity("DVL_QuoteQuiz.Domain.Models.User", b =>
+                {
+                    b.Navigation("AnsweredQuotes");
                 });
 #pragma warning restore 612, 618
         }

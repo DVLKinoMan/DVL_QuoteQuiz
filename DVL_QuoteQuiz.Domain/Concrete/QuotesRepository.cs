@@ -46,10 +46,13 @@ namespace DVL_QuoteQuiz.Domain.Concrete
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Dictionary<int, int>> GetIdsAndAuthorsAsync(bool includeDeleted = false) =>
+        //todo check if works
+        public async Task<Dictionary<int, int>> GetIdsAndAuthorsForUserAsync(int userId, DateTime maxDateTimeAnswered, bool includeDeleted = false) =>
             (await (from q in _context.Quotes.Where(q => includeDeleted || !q.IsDeleted)
                 join ans in _context.QuoteAnswers on q.Id equals ans.QuoteId
-                where ans.IsRightAnswer
+                join answeredQuote in _context.UserAnsweredQuotes on q.Id equals answeredQuote.QuoteId into usQuotes
+                from usQu in usQuotes.DefaultIfEmpty() 
+                where ans.IsRightAnswer && (usQu == null || (usQu.UserId == userId && usQu.AnsweredDateTime <= maxDateTimeAnswered))
                 select new {q.Id, ans.AuthorId}).ToListAsync())
             .ToDictionary(q => q.Id, q => q.AuthorId);
 
@@ -69,6 +72,12 @@ namespace DVL_QuoteQuiz.Domain.Concrete
                     { } q => q,
                     _ => throw new ArgumentException("Quote was not found with the given Id", nameof(quoteId))
                 };
+
+        public async Task<bool> ExistsAnswerAsync(int quoteId, int authorId) =>
+            await _context.QuoteAnswers.AnyAsync(ans => ans.QuoteId == quoteId && ans.AuthorId == authorId);
+
+        public async Task<Author> GetQuoteAuthorAsync(int quoteId) => await _context.QuoteAnswers
+            .Where(ans => ans.IsRightAnswer && ans.QuoteId == quoteId).Select(ans => ans.Author).FirstOrDefaultAsync();
 
     }
 }

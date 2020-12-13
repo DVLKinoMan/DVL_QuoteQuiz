@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -41,6 +42,8 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Column(Order = 7)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastUpdatedDateTime { get; set; }
+
+        public IList<UserAnsweredQuote>? AnsweredQuotes { get; set; } = default!;
     }
 
     public enum Gender

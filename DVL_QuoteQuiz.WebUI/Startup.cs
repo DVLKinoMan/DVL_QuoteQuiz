@@ -29,6 +29,7 @@ namespace DVL_QuoteQuiz.WebUI
 
             services.AddScoped<IQuotesRepository, QuotesRepository>();
             services.AddScoped<IAuthorsRepository, AuthorsRepository>();
+            services.AddScoped<IUserAnsweredQuotesRepository, UserAnsweredQuotesRepository>();
 
             //services.AddCors(options =>
             //{

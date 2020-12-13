@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace DVL_QuoteQuiz.WebUI.Controllers
 {
@@ -16,12 +17,15 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
         private readonly ILogger<QuotesController> _logger;
         private readonly IQuotesRepository _quotesRepo;
         private readonly IAuthorsRepository _authorsRepo;
+        private readonly long _maxedAllowedIntervalForQuote = TimeSpan.TicksPerDay;
 
-        public QuotesController(ILogger<QuotesController> logger, IQuotesRepository quotesRepo, IAuthorsRepository authorsRepo)
+        public QuotesController(ILogger<QuotesController> logger, IQuotesRepository quotesRepo, IAuthorsRepository authorsRepo, IConfiguration config)
         {
             _logger = logger;
             _quotesRepo = quotesRepo;
             _authorsRepo = authorsRepo;
+            if (long.TryParse(config["maxedAllowedIntervalForQuote"], out var val))
+                _maxedAllowedIntervalForQuote = val;
         }
 
         [HttpPost("Add")]
@@ -31,25 +35,26 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
             return Ok();
         }
 
-        [HttpGet("GetQuotesQuiz")]
-        public async Task<QuoteQuizGame> GetQuizGameWithRandomQuotes(int quotesNumber, bool withMultipleChoices = true)
+        [HttpGet("Get/NextQuote/{userId}")]
+        public async Task<InGameQuote?> GetQuoteForUserAsync(int userId, bool withMultipleChoices = true)
         {
-            var quotesWithAuthorIds = await _quotesRepo.GetIdsAndAuthorsAsync();
+            InGameQuote? gameQuote = null;
+
+            var quotesWithAuthorIds = await _quotesRepo.GetIdsAndAuthorsForUserAsync(userId, new DateTime(DateTime.Now.Ticks - _maxedAllowedIntervalForQuote));
+
+            if (quotesWithAuthorIds.Count == 0)
+                return gameQuote;
+
             var authorNames = await _authorsRepo.GetAuthorsWithNames();
 
-            var game = new QuoteQuizGame();
             var random = new Random();
-            //todo it may loop forever
-            while (quotesWithAuthorIds.Count != 0 && game.QuotesCount != quotesNumber)
-            {
-                var quote = new InGameQuote
-                    {Id = quotesWithAuthorIds.ElementAt(random.Next(0, quotesWithAuthorIds.Count)).Key};
-                await AddRandomAnswers(quote);
-                game.Quotes.Add(quote);
-                quotesWithAuthorIds.Remove(quote.Id);
-            }
 
-            return game;
+            gameQuote = new InGameQuote
+                {Id = quotesWithAuthorIds.ElementAt(random.Next(0, quotesWithAuthorIds.Count)).Key};
+            await AddRandomAnswers(gameQuote);
+            quotesWithAuthorIds.Remove(gameQuote.Id);
+
+            return gameQuote;
 
             async Task AddRandomAnswers(InGameQuote quote)
             {
@@ -93,5 +98,10 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
                 return (authId, authorNames[authId]);
             }
         }
+
+        //[HttpGet("{quoteId}/Belongs/{authorId}")]
+        //public async Task<bool> IfAnsweredRight(int quoteId, int authorId, bool mustBeTrue = true) =>
+        //    (await _quotesRepo.ExistsAnswerAsync(quoteId, authorId)) == mustBeTrue;
+
     }
 }

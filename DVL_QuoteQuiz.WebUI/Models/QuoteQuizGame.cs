@@ -21,7 +21,7 @@ namespace DVL_QuoteQuiz.WebUI.Models
 
         public List<InGameAnswer> Answers { get; set; } = new List<InGameAnswer>();
 
-        public int AnsweredAuthorId { get; set; }
+        public int? AnsweredAuthorId { get; set; }
     }
 
     public class InGameAnswer
