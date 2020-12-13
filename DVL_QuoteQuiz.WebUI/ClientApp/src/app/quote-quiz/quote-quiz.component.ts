@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { InGameQuote, InGameAnswer } from "./quoteQuizGame.model";
+import { InGameQuote, InGameAnswer } from "./quote-quiz-game.model";
 import { ActivatedRoute, Params } from "@angular/router";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { CookieService } from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-quoteQuiz-component',
-  templateUrl: './quoteQuiz.component.html'
+  templateUrl: './quote-quiz.component.html'
 })
 export class QuoteQuizComponent implements OnInit {
   multipleAnswersQuiz: boolean;

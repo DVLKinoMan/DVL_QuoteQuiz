@@ -7,9 +7,8 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { AddEditQuoteComponent } from "./addEditQuote/addEditQuote.component";
-import { QuoteQuizComponent } from './quoteQuiz/quoteQuiz.component';
+import { AddEditQuoteComponent } from "./quote-add-edit/quote-add-edit.component";
+import { QuoteQuizComponent } from './quote-quiz/quote-quiz.component';
 import { CookieService } from 'ngx-cookie-service';
 import { SettingsComponent } from "./settings/settings.component";
 
@@ -20,8 +19,7 @@ import { SettingsComponent } from "./settings/settings.component";
     HomeComponent,
     AddEditQuoteComponent,
     SettingsComponent,
-    QuoteQuizComponent,
-    FetchDataComponent
+    QuoteQuizComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -30,10 +28,9 @@ import { SettingsComponent } from "./settings/settings.component";
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'addQuote', component: AddEditQuoteComponent },
-      { path: 'quoteQuiz', component: QuoteQuizComponent },
-      { path: 'settings', component: SettingsComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'quote/add', component: AddEditQuoteComponent },
+      { path: 'quote/quiz', component: QuoteQuizComponent },
+      { path: 'quote/settings', component: SettingsComponent }
     ])
   ],
   providers: [CookieService],

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Quote } from "../addEditQuote/quote.model";
+import { Quote } from "../quote-add-edit/quote.model";
 import { Inject, Injectable } from "@angular/core";
 import { throwError } from 'rxjs';
 

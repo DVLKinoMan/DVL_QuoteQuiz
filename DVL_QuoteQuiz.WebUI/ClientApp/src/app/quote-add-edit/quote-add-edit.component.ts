@@ -6,7 +6,7 @@ import { QuoteService } from "../Services/quote.service";
 
 @Component({
   selector: 'app-addQuote-component',
-  templateUrl: './addEditQuote.component.html'
+  templateUrl: './quote-add-edit.component.html'
 })
 
 export class AddEditQuoteComponent implements OnInit {
