@@ -17,5 +17,8 @@ namespace DVL_QuoteQuiz.Domain.Concrete
 
         public async Task<Dictionary<int, string>> GetAuthorsWithNames() =>
             await _context.Authors.ToDictionaryAsync(auth => auth.Id, auth => auth.Name);
+
+        public async Task<List<Author>> ListAsync() =>
+            await _context.Authors.ToListAsync();
     }
 }

@@ -1,31 +1,31 @@
 <h1>Quiz Game</h1>
 <hr />
 
-<div style="margin-left: 30%; width: 60%">
+<div style="margin-left: 30%; width: 40%">
   <div *ngIf="!gameHasEnded; else gameEnded">
     <h1>Who Said It?</h1>
-<textarea disabled class="form-control" rows="6">"{{currentQuote.text}}"</textarea>
-    <p *ngIf="showAnswer">{{actualAuthorName}}</p>
+<textarea style="background-color:wheat; font-style: italic;" rows="8" disabled class="form-control">"{{currentQuote.text}}"</textarea>
+    <p *ngIf="showAnswer" style="text-align: right; font-style: italic;">{{actualAuthorName}}</p>
     <div *ngIf="multipleAnswersQuiz; else YesNoQuestion">
-      <button [disabled]="showAnswer" style="margin-top: 10px" (click)="onClickAuthor(0)" type="button" class="btn btn-success">{{currentQuote.answers[0].authorName}}</button>
+      <button [disabled]="showAnswer" style="background-color:deepskyblue;  margin-top: 10px" (click)="onClickAuthor(0)" type="button" class="btn">A. {{currentQuote.answers[0].authorName}}</button>
       <br />
-      <button [disabled]="showAnswer" style="margin-top: 10px" (click)="onClickAuthor(1)" type="button" class="btn btn-success">{{currentQuote.answers[1].authorName}}</button>
+      <button [disabled]="showAnswer" style="background-color: deepskyblue; margin-top: 10px" (click)="onClickAuthor(1)" type="button" class="btn">B. {{currentQuote.answers[1].authorName}}</button>
       <br />
-      <button [disabled]="showAnswer" style="margin-top: 10px" (click)="onClickAuthor(2)" type="button" class="btn btn-success">{{currentQuote.answers[2].authorName}}</button>
+      <button [disabled]="showAnswer" style="background-color: deepskyblue; margin-top: 10px" (click)="onClickAuthor(2)" type="button" class="btn">C. {{currentQuote.answers[2].authorName}}</button>
     </div>
     <ng-template #YesNoQuestion>
-      <p>{{currentQuote.answers[0].authorName}}?</p>
+      <p style="text-align: center">{{currentQuote.answers[0].authorName}}?</p>
 
-      <button [disabled]="showAnswer" type="button" class="btn btn-success" (click)="yesOrNoClick(true)">
+      <button [disabled]="showAnswer" style="float: left" type="button" class="btn btn-success" (click)="yesOrNoClick(true)">
         Yes
       </button>
-      <button [disabled]="showAnswer" type="button" class="btn btn-danger" (click)="yesOrNoClick(false)">
+      <button [disabled]="showAnswer" style="float: right" type="button" class="btn btn-danger" (click)="yesOrNoClick(false)">
         No
       </button>
     </ng-template>
-    <p *ngIf="showAnswer">{{message}}</p>
+    <p *ngIf="showAnswer" style="float: left">{{message}}</p>
 
-    <button *ngIf="showAnswer" type="button" (click)="onClickNext()" class="btn btn-success">Next</button>
+    <button *ngIf="showAnswer" style="float: right" type="button" (click)="onClickNext()" class="btn btn-success">Next -></button>
   </div>
   <ng-template #gameEnded>
     <h1>There is no more quotes which you don't answered</h1>

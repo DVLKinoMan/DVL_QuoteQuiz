@@ -1,29 +1,35 @@
-<h1>Add Quote</h1>
+<h1>Add(Edit) Quote</h1>
 
 <div class="row">
-  <div class="col-xs-12">
+  <div style="margin-left: 30%; width: 40%">
     <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
-      <div class="row">
-        <div class="col-xs-12">
-          <button type="submit"
+      <div>
+        <div>
+          <button style="float: left"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onCancel()">
+            <- Back
+          </button>
+          <button style="float: right"
+                  type="submit"
                   class="btn btn-success"
                   [disabled]="!quoteForm.valid">
             Save
           </button>
-          <button type="button" class="btn btn-danger" (click)="onCancel()">
-            Cancel
-          </button>
         </div>
       </div>
+      <br />
+      <br />
       <div class="row">
-        <div class="col-xs-12">
+        <div style="width: 100%">
           <div class="form-group">
-            <label for="quoteText">Quote Text</label>
+            <label for="quoteText">Quote Text:</label>
             <textarea type="text"
                       id="quoteText"
-                      class="form-control"
                       formControlName="quoteText"
-                      rows="6"></textarea>
+                      class="form-control"
+                      style="background-color:wheat; font-style: italic;" rows="8"></textarea>
           </div>
         </div>
       </div>
@@ -34,44 +40,64 @@
                [formGroupName]="i"
                style="margin-top: 10px;">
 
+            <!--<div formGroupName="author">
+          <div class="col-xs-2">
+            Author Id:
+            <input type="number"
+                   class="form-control"
+                   formControlName="id" />
+          </div>
+          <div class="col-xs-8">
+            Author Name:
+            <input type="text" class="form-control" formControlName="fullName" />
+          </div>
+        </div>-->
+
             <div formGroupName="author">
               <div class="col-xs-2">
-                Author Id:
-                <input type="number"
-                       class="form-control"
-                       formControlName="id" />
+                Choose Author:
+                <select formControlName="id" class="form-control">
+                  <option [ngValue]="undefined" disabled selected>Choose Author</option>
+                  <option *ngFor="let author of authors" [ngValue]="author.id"> {{author.fullName}} </option>
+                </select>
+                <!--<ng-select [items]="authors"
+                       bindLabel="fullName"
+                       bindValue="id"
+                       formControlName="id">
+            </ng-select>-->
               </div>
               <div class="col-xs-8">
-                Author Name:
+                New Author:
                 <input type="text" class="form-control" formControlName="fullName" />
               </div>
             </div>
-              <div class="col-xs-2">
-                Is Right Answer:
-                <input type="checkbox"
-                       class="form-control"
-                       formControlName="isRightAnswer" />
-              </div>
-              <div class="col-xs-2">
-                Delete:
-                <button type="button"
-                        class="form-control btn btn-danger"
-                        (click)="onDeleteAnswer(i)">
-                  X
-                </button>
-              </div>
+
+            <div class="col-xs-2">
+              Is Right Answer:
+              <input type="checkbox"
+                     class="form-control"
+                     formControlName="isRightAnswer" />
             </div>
-            <hr />
-            <div class="row">
-              <div class="col-xs-12">
-                <button type="button"
-                        class="btn btn-success"
-                        (click)="onAddAnswer()">
-                  Add Answer
-                </button>
-              </div>
+            <div class="col-xs-2">
+              Delete:
+              <button type="button"
+                      class="form-control btn btn-danger"
+                      (click)="onDeleteAnswer(i)">
+                X
+              </button>
             </div>
           </div>
+          <hr />
+          <div class="row">
+            <div class="col-xs-12">
+              <button type="button"
+                      class="btn btn-success"
+                      (click)="onAddAnswer()">
+                Add Answer
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </div>

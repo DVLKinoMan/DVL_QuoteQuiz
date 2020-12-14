@@ -1,4 +1,5 @@
-﻿using DVL_QuoteQuiz.Domain.Abstract;
+﻿using System.Collections.Generic;
+using DVL_QuoteQuiz.Domain.Abstract;
 using DVL_QuoteQuiz.WebUI.Extensions;
 using DVL_QuoteQuiz.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,21 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IUserAnsweredQuotesRepository _answeredQuotesRepo;
+        private readonly IUsersRepository _usersRepo;
         private readonly IQuotesRepository _quotesRepo;
 
-        public UserController(ILogger<UserController> logger, IUserAnsweredQuotesRepository answeredQuotesRepo, IQuotesRepository quotesRepo)
+        public UserController(ILogger<UserController> logger, IUserAnsweredQuotesRepository answeredQuotesRepo,
+            IUsersRepository usersRepo, IQuotesRepository quotesRepo)
         {
             _logger = logger;
             _answeredQuotesRepo = answeredQuotesRepo;
+            _usersRepo = usersRepo;
             _quotesRepo = quotesRepo;
         }
+
+        [HttpGet("List")]
+        public async Task<List<ListUserResponse>> ListUsersAsync(int? itemsPerPage, int currentPageNumber = 1) =>
+            (await _usersRepo.ListAsync(itemsPerPage, currentPageNumber, true)).ToListUserResponses();
 
         [HttpPost("Post/QuoteAnswer/{userId}")]
         public async Task<InGameAnswer> PostQuoteAnswerAsync(int userId, InGameQuote quote)
@@ -35,5 +43,15 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
 
             return res;
         }
+
+        [HttpPost("Delete/{userId}")]
+        public async Task DeleteAsync(int userId) => await _usersRepo.DeleteAsync(userId);
+
+        [HttpPost("Disable/{userId}")]
+        public async Task DisableAsync(int userId) => await _usersRepo.ToggleDisabledAsync(userId);
+
+        [HttpPost("Restore/{userId}")]
+        public async Task RestoreAsync(int userId) => await _usersRepo.ToggleDisabledAsync(userId);
+
     }
 }

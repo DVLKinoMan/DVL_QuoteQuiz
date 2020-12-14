@@ -16,7 +16,7 @@ export class QuoteQuizComponent implements OnInit {
   message: string;
   actualAuthorName: string;
   showAnswer: boolean = false;
-  userId: number = 1;//todo
+  userId: number = 4;//todo
   gameHasEnded: boolean = false;
 
   constructor(

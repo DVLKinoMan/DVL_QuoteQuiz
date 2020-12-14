@@ -35,7 +35,7 @@ namespace DVL_QuoteQuiz.Domain.Models
         [Column(Order = 5)] public bool IsAdmin { get; set; }
 
         //todo: want default value as false
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [Column(Order = 6)] public bool IsDisabled { get; set; }
 
         //todo: default value datetime.now

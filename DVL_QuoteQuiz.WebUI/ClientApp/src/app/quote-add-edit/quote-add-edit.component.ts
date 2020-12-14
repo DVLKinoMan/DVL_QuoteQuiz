@@ -3,7 +3,8 @@ import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QuoteService } from "../Services/quote.service";
 import { HttpClient } from "@angular/common/http";
-import { Quote } from "./quote.model";
+import { Quote, Author } from "./quote.model";
+//import { NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-addQuote-component',
@@ -14,6 +15,7 @@ export class AddEditQuoteComponent implements OnInit {
   id: number;
   editMode = false;
   quoteForm: FormGroup;
+  authors: Author[];
 
   get answersControls() {
     return (this.quoteForm.get('answers') as FormArray).controls;
@@ -34,6 +36,7 @@ export class AddEditQuoteComponent implements OnInit {
       this.editMode = params['id'] != null;
     });
     this.initForm();
+    this.fetchAuthors();
   }
 
   onAddAnswer() {
@@ -52,8 +55,14 @@ export class AddEditQuoteComponent implements OnInit {
     (<FormArray>this.quoteForm.get('answers')).removeAt(index);
   }
 
+  private fetchAuthors() {
+    this.http.get<Author[]>(this.baseUrl + "Authors/List").subscribe(result => {
+        this.authors = result;
+      },
+      error => console.error(error));
+  }
+
   private initForm() {
-    let quoteText = '';
     let answers = new FormArray([]);
 
     if (this.editMode) {
@@ -79,7 +88,7 @@ export class AddEditQuoteComponent implements OnInit {
 
     } else {
       this.quoteForm = new FormGroup({
-        quoteText: new FormControl(quoteText, Validators.required),
+        quoteText: new FormControl("", Validators.required),
         answers: answers
       });
     }

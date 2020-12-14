@@ -8,6 +8,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
 {
     public static class Converters
     {
+        #region Quote
         public static Quote ToQuote(this AddEditQuoteRequest request, int? quoteId = null)
         {
             var quote = new Quote
@@ -22,7 +23,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
         }
 
         public static IEnumerable<QuoteAnswer> ToQuoteAnswers(this IList<QuoteAnswerViewModel> viewModel) =>
-                viewModel.Select(mod => mod.ToQuoteAnswer());
+            viewModel.Select(mod => mod.ToQuoteAnswer());
 
         public static QuoteAnswer ToQuoteAnswer(this QuoteAnswerViewModel viewModel)
         {
@@ -37,7 +38,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                     answer.AuthorId = id;
                     break;
                 case { FullName: { } name }:
-                    answer.Author = new Author() { Name = name };
+                    answer.Author = new Author() {Name = name};
                     break;
                 default:
                     throw new InvalidOperationException("Author id or name should not be null");
@@ -46,13 +47,9 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
             return answer;
         }
 
-        public static Author ToAuthor(this QuoteAuthor author) => author switch
-        {
-            { Id: { } id } => new Author { Id = id },
-            { FullName: { } name } => new Author() { Name = name },
-            _ => throw new InvalidOperationException("Author id or name should not be null")
-        };
+        #endregion
 
+        #region Answers
         public static IEnumerable<InGameAnswer> ToInGameAnswers(this IEnumerable<QuoteAnswer> qAnswers) =>
             qAnswers.Select(q => q.ToInGameAnswer());
 
@@ -79,6 +76,9 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                 AnsweredDateTime = DateTime.Now,
                 AnsweredRight = answeredRight
             };
+        #endregion
+
+        #region ListQuote
 
         public static List<ListQuoteResponse> ToListQuoteResponses(this IEnumerable<Quote> quotes) =>
             quotes.Select(q => q.ToListQuoteResponse()).ToList();
@@ -95,6 +95,9 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                 IsDeleted = quote.IsDeleted
             };
 
+        #endregion
+
+        #region AddEdit
         public static AddEditQuoteRequest ToAddEditRequest(this Quote quote) =>
             new AddEditQuoteRequest
             {
@@ -112,6 +115,40 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                 IsRightAnswer = answer.IsRightAnswer,
                 Author = answer.Author.ToQuoteAuthor()
             };
+#endregion
+
+        #region Users
+        public static List<ListUserResponse> ToListUserResponses(this IEnumerable<User> users) =>
+            users.Select(u => u.ToListUserResponse()).ToList();
+
+        public static ListUserResponse ToListUserResponse(this User user) =>
+            new ListUserResponse
+            {
+                UserId = user.Id,
+                UserName = user.Name,
+                Email = user.Email,
+                AnsweredQuotesCount = user.AnsweredQuotes switch
+                {
+                    { } count => count.Count,
+                    _ => 0
+                },
+                IsAdmin = user.IsAdmin,
+                Gender = user.Gender?.ToString(),
+                IsDisabled = user.IsDisabled,
+                LastUpdatedDateTime = user.LastUpdatedDateTime
+            };
+#endregion
+
+        #region Author
+        public static Author ToAuthor(this QuoteAuthor author) => author switch
+        {
+            { Id: { } id } => new Author {Id = id},
+            { FullName: { } name } => new Author() {Name = name},
+            _ => throw new InvalidOperationException("Author id or name should not be null")
+        };
+
+        public static List<QuoteAuthor> ToQuoteAuthors(this IEnumerable<Author> authors) =>
+            authors.Select(auth => auth.ToQuoteAuthor()).ToList();
 
         public static QuoteAuthor ToQuoteAuthor(this Author author) =>
             new QuoteAuthor
@@ -119,6 +156,6 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                 Id = author.Id,
                 FullName = author.Name
             };
-
+#endregion
     }
 }

@@ -13,8 +13,6 @@ namespace DVL_QuoteQuiz.WebUI
 {
     public class Startup
     {
-        //readonly string MyAllowSpecificOrigins = "sdfasd";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,16 +27,8 @@ namespace DVL_QuoteQuiz.WebUI
 
             services.AddScoped<IQuotesRepository, QuotesRepository>();
             services.AddScoped<IAuthorsRepository, AuthorsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IUserAnsweredQuotesRepository, UserAnsweredQuotesRepository>();
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("http://localhost:44340");
-            //        });
-            //});
 
             services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration =>
@@ -47,7 +37,6 @@ namespace DVL_QuoteQuiz.WebUI
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -57,12 +46,9 @@ namespace DVL_QuoteQuiz.WebUI
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            //app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod());
-            //app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
@@ -81,9 +67,6 @@ namespace DVL_QuoteQuiz.WebUI
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())

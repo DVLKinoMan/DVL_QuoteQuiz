@@ -29,7 +29,6 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
                 _maxedAllowedIntervalForQuote = val;
         }
 
-        //todo: only admin can access
         [HttpPost("Add")]
         public async Task<IActionResult> AddAsync(AddEditQuoteRequest request)
         {
@@ -37,12 +36,10 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
             return Ok();
         }
 
-        //todo: only admin can access
         [HttpPost("Edit/{quoteId}")]
         public async Task EditAsync(AddEditQuoteRequest request, int quoteId) =>
             await _quotesRepo.EditAsync(request.ToQuote(quoteId));
 
-        //todo: only admin can access
         [HttpGet("Get/{quoteId}")]
         public async Task<AddEditQuoteRequest> GetAsync(int quoteId) =>
             (await _quotesRepo.GetDetailedAsync(quoteId, true)).ToAddEditRequest();
@@ -64,7 +61,7 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
             gameQuote = new InGameQuote
             { Id = quotesWithAuthorIds.ElementAt(random.Next(0, quotesWithAuthorIds.Count)).Key };
             await AddRandomAnswers(gameQuote);
-            quotesWithAuthorIds.Remove(gameQuote.Id);
+            gameQuote.Answers.Shuffle();
 
             return gameQuote;
 
@@ -111,16 +108,13 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
             }
         }
 
-        //todo: only admins have permission
         [HttpGet("List")]
         public async Task<List<ListQuoteResponse>> ListQuotesAsync(int? itemsPerPage, int currentPageNumber = 1) =>
             (await _quotesRepo.ListAsync(itemsPerPage, currentPageNumber, true)).ToListQuoteResponses();
 
-        //todo: only admins have permission
         [HttpPost("Delete/{quoteId}")]
         public async Task DeleteAsync(int quoteId) => await _quotesRepo.DeleteAsync(quoteId);
 
-        //todo: only admins have permission
         [HttpPost("Restore/{quoteId}")]
         public async Task RestoreAsync(int quoteId) => await _quotesRepo.RestoreAsync(quoteId);
 
