@@ -2,15 +2,6 @@
 
 namespace DVL_QuoteQuiz.WebUI.Models
 {
-    public class QuoteQuizGame
-    {
-        public int QuotesCount => Quotes.Count;
-
-        public bool MultipleAnswersQuiz { get; set; }
-
-        public IList<InGameQuote> Quotes { get; set; } = new List<InGameQuote>();
-    }
-
     public class InGameQuote
     {
         public int Id { get; set; }

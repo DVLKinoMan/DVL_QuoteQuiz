@@ -4,6 +4,7 @@ using DVL_QuoteQuiz.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -28,12 +29,23 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
                 _maxedAllowedIntervalForQuote = val;
         }
 
+        //todo: only admin can access
         [HttpPost("Add")]
-        public async Task<IActionResult> AddAsync(AddQuoteRequest request)
+        public async Task<IActionResult> AddAsync(AddEditQuoteRequest request)
         {
             await _quotesRepo.AddAsync(request.ToQuote());
             return Ok();
         }
+
+        //todo: only admin can access
+        [HttpPost("Edit/{quoteId}")]
+        public async Task EditAsync(AddEditQuoteRequest request, int quoteId) =>
+            await _quotesRepo.EditAsync(request.ToQuote(quoteId));
+
+        //todo: only admin can access
+        [HttpGet("Get/{quoteId}")]
+        public async Task<AddEditQuoteRequest> GetAsync(int quoteId) =>
+            (await _quotesRepo.GetDetailedAsync(quoteId, true)).ToAddEditRequest();
 
         [HttpGet("Get/NextQuote/{userId}")]
         public async Task<InGameQuote?> GetQuoteForUserAsync(int userId, bool withMultipleChoices = true)
@@ -50,7 +62,7 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
             var random = new Random();
 
             gameQuote = new InGameQuote
-                {Id = quotesWithAuthorIds.ElementAt(random.Next(0, quotesWithAuthorIds.Count)).Key};
+            { Id = quotesWithAuthorIds.ElementAt(random.Next(0, quotesWithAuthorIds.Count)).Key };
             await AddRandomAnswers(gameQuote);
             quotesWithAuthorIds.Remove(gameQuote.Id);
 
@@ -98,6 +110,19 @@ namespace DVL_QuoteQuiz.WebUI.Controllers
                 return (authId, authorNames[authId]);
             }
         }
+
+        //todo: only admins have permission
+        [HttpGet("List")]
+        public async Task<List<ListQuoteResponse>> ListQuotesAsync(int? itemsPerPage, int currentPageNumber = 1) =>
+            (await _quotesRepo.ListAsync(itemsPerPage, currentPageNumber, true)).ToListQuoteResponses();
+
+        //todo: only admins have permission
+        [HttpPost("Delete/{quoteId}")]
+        public async Task DeleteAsync(int quoteId) => await _quotesRepo.DeleteAsync(quoteId);
+
+        //todo: only admins have permission
+        [HttpPost("Restore/{quoteId}")]
+        public async Task RestoreAsync(int quoteId) => await _quotesRepo.RestoreAsync(quoteId);
 
         //[HttpGet("{quoteId}/Belongs/{authorId}")]
         //public async Task<bool> IfAnsweredRight(int quoteId, int authorId, bool mustBeTrue = true) =>

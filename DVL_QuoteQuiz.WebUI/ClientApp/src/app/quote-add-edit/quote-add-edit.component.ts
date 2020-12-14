@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-//import { Quote, QuoteAnswer } from "./quote.model";
 import { QuoteService } from "../Services/quote.service";
+import { HttpClient } from "@angular/common/http";
+import { Quote } from "./quote.model";
 
 @Component({
   selector: 'app-addQuote-component',
@@ -12,8 +13,6 @@ import { QuoteService } from "../Services/quote.service";
 export class AddEditQuoteComponent implements OnInit {
   id: number;
   editMode = false;
-  //public quote: Quote = new Quote(null);
-  //public newAnswer: QuoteAnswer;
   quoteForm: FormGroup;
 
   get answersControls() {
@@ -23,6 +22,8 @@ export class AddEditQuoteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private quoteService: QuoteService,
+    private http: HttpClient,
+    @Inject('BASE_URL') private baseUrl: string,
     private router: Router) {
 
   }
@@ -55,47 +56,45 @@ export class AddEditQuoteComponent implements OnInit {
     let quoteText = '';
     let answers = new FormArray([]);
 
-    //if (this.editMode) {
-    //  const recipe = this.recipeService.getRecipe(this.id);
-    //  recipeName = recipe.name;
-    //  recipeImagePath = recipe.imagePath;
-    //  recipeDescription = recipe.description;
-    //  if (recipe['ingredients']) {
-    //    for (let ingredient of recipe.ingredients) {
-    //      recipeIngredients.push(
-    //        new FormGroup({
-    //          name: new FormControl(ingredient.name, Validators.required),
-    //          amount: new FormControl(ingredient.amount, [
-    //            Validators.required,
-    //            Validators.pattern(/^[1-9]+[0-9]*$/)
-    //          ])
-    //        })
-    //      );
-    //    }
-    //  }
-    //}
+    if (this.editMode) {
+      this.http.get<Quote>(this.baseUrl + "Quotes/Get/" + this.id).subscribe(result => {
+          for (let answer of result.answers) {
+            answers.push(
+              new FormGroup({
+                author: new FormGroup({
+                  id: new FormControl(answer.author.id),
+                  fullName: new FormControl(answer.author.fullName)
+                }),
+                isRightAnswer: new FormControl(answer.isRightAnswer)
+              })
+            );
+          }
+          this.quoteForm = new FormGroup({
+            quoteText: new FormControl(result.quoteText, Validators.required),
+            answers: answers
+          });
 
-    this.quoteForm = new FormGroup({
-      quoteText: new FormControl(quoteText, Validators.required),
-      answers: answers
-    });
+        },
+        error => console.error(error));
+
+    } else {
+      this.quoteForm = new FormGroup({
+        quoteText: new FormControl(quoteText, Validators.required),
+        answers: answers
+      });
+    }
   }
 
   onSubmit() {
-    // const newRecipe = new Recipe(
-    //   this.recipeForm.value['name'],
-    //   this.recipeForm.value['description'],
-    //   this.recipeForm.value['imagePath'],
-    //   this.recipeForm.value['ingredients']);
-    //if (this.editMode) {
-    //  this.recipeService.updateRecipe(this.id, this.recipeForm.value);
-    //} else {
+    if (this.editMode) {
+      this.quoteService.editQuote(this.quoteForm.value, this.id);
+    } else {
       this.quoteService.addQuote(this.quoteForm.value);
-    //}
+    }
     this.onCancel();
   }
 
   onCancel() {
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['/list']);;
   }
 }

@@ -31,4 +31,28 @@ export class QuoteService {
       );
   }
 
+  editQuote(quote: Quote, quoteId: number) {
+    this.http
+      .post<Quote>(
+        this.baseUrl + 'Quotes/Edit/' + quoteId,
+        quote
+      )
+      .subscribe(
+        responseData => {
+          console.log(responseData);
+        },
+        error => {
+          let errorMessage;
+          if (error.error instanceof ErrorEvent)
+            errorMessage = `Error Message: ${error.error.message}`;
+          else
+            errorMessage = `Error Status: ${error.status}\nMessage: ${error.message}`;
+
+          window.alert(errorMessage);
+
+          return throwError(errorMessage);
+        }
+      );
+  }
+
 }

@@ -11,6 +11,7 @@ import { AddEditQuoteComponent } from "./quote-add-edit/quote-add-edit.component
 import { QuoteQuizComponent } from './quote-quiz/quote-quiz.component';
 import { CookieService } from 'ngx-cookie-service';
 import { SettingsComponent } from "./settings/settings.component";
+import { QuoteListComponent } from "./quote-list/quote-list.component";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SettingsComponent } from "./settings/settings.component";
     HomeComponent,
     AddEditQuoteComponent,
     SettingsComponent,
-    QuoteQuizComponent
+    QuoteQuizComponent,
+    QuoteListComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -28,12 +30,14 @@ import { SettingsComponent } from "./settings/settings.component";
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'quote/add', component: AddEditQuoteComponent },
+      { path: 'quote/addEdit', component: AddEditQuoteComponent },
       { path: 'quote/quiz', component: QuoteQuizComponent },
-      { path: 'quote/settings', component: SettingsComponent }
+      { path: 'quote/settings', component: SettingsComponent },
+      { path: 'list', component: QuoteListComponent }
     ])
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

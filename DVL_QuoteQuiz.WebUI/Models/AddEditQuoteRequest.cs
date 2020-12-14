@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DVL_QuoteQuiz.WebUI.Models
 {
-    public class AddQuoteRequest
+    public class AddEditQuoteRequest
     {
         [Required]
         public string QuoteText { get; set; } = default!;

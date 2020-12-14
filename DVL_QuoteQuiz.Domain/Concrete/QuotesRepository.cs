@@ -23,18 +23,33 @@ namespace DVL_QuoteQuiz.Domain.Concrete
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Quote>> ListAsync(int itemsPerPage = 10, int currentPageNumber = 1,
-            bool showDeleted = false) =>
-            await _context.Quotes.Where(q => showDeleted || (!q.IsDeleted && !showDeleted))
-                .Skip(itemsPerPage * (currentPageNumber - 1))
-                .Take(itemsPerPage)
-                .ToListAsync();
+        public async Task<List<Quote>> ListAsync(int? itemsPerPage, int currentPageNumber = 1,
+            bool showDeleted = false)
+
+        {
+            var query = _context.Quotes.Include("QuoteAnswers").Include("QuoteAnswers.Author")
+                .Where(q => showDeleted || (!q.IsDeleted && !showDeleted));
+
+            if (itemsPerPage is { } itPage)
+                return await query.Skip(itPage * (currentPageNumber - 1))
+                    .Take(itPage)
+                    .ToListAsync();
+
+            return await query.ToListAsync();
+        }
 
         public async Task DeleteAsync(int quoteId) => await DeleteAsync(await GetAsync(quoteId));
 
         public async Task DeleteAsync(Quote quote)
         {
             quote.IsDeleted = true;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RestoreAsync(int quoteId)
+        {
+            var quote = await GetAsync(quoteId, true);
+            quote.IsDeleted = false;
             await _context.SaveChangesAsync();
         }
 
@@ -46,7 +61,6 @@ namespace DVL_QuoteQuiz.Domain.Concrete
             await _context.SaveChangesAsync();
         }
 
-        //todo check if works
         public async Task<Dictionary<int, int>> GetIdsAndAuthorsForUserAsync(int userId, DateTime maxDateTimeAnswered, bool includeDeleted = false) =>
             (await (from q in _context.Quotes.Where(q => includeDeleted || !q.IsDeleted)
                 join ans in _context.QuoteAnswers on q.Id equals ans.QuoteId
@@ -56,18 +70,18 @@ namespace DVL_QuoteQuiz.Domain.Concrete
                 select new {q.Id, ans.AuthorId}).ToListAsync())
             .ToDictionary(q => q.Id, q => q.AuthorId);
 
-        public async Task<Quote> GetAsync(int quoteId) =>
-            await _context.Quotes.FirstOrDefaultAsync(q => q.Id == quoteId && q.IsDeleted == false) switch
+        public async Task<Quote> GetAsync(int quoteId, bool evenIfDeleted = false) =>
+            await _context.Quotes.FirstOrDefaultAsync(q => q.Id == quoteId && (evenIfDeleted || q.IsDeleted == false)) switch
             {
                 { } q => q,
                 _ => throw new ArgumentException("Quote was not found with the given Id", nameof(quoteId))
             };
 
-        public async Task<Quote> GetDetailedAsync(int quoteId) =>
+        public async Task<Quote> GetDetailedAsync(int quoteId, bool evenIfDeleted = false) =>
             await _context.Quotes
                     .Include("QuoteAnswers")
                     .Include("QuoteAnswers.Author")
-                    .FirstOrDefaultAsync(q => q.Id == quoteId && q.IsDeleted == false) switch
+                    .FirstOrDefaultAsync(q => q.Id == quoteId && (evenIfDeleted || q.IsDeleted == false)) switch
                 {
                     { } q => q,
                     _ => throw new ArgumentException("Quote was not found with the given Id", nameof(quoteId))

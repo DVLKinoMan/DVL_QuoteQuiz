@@ -8,14 +8,21 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
 {
     public static class Converters
     {
-        public static Quote ToQuote(this AddQuoteRequest request) => new Quote
+        public static Quote ToQuote(this AddEditQuoteRequest request, int? quoteId = null)
         {
-            Text = request.QuoteText,
-            QuoteAnswers = request.Answers.ToQuoteAnswers().ToList()
-        };
+            var quote = new Quote
+            {
+                Text = request.QuoteText,
+                QuoteAnswers = request.Answers.ToQuoteAnswers().ToList()
+            };
+            if (quoteId is { } id)
+                quote.Id = id;
+
+            return quote;
+        }
 
         public static IEnumerable<QuoteAnswer> ToQuoteAnswers(this IList<QuoteAnswerViewModel> viewModel) =>
-            viewModel.Select(mod => mod.ToQuoteAnswer());
+                viewModel.Select(mod => mod.ToQuoteAnswer());
 
         public static QuoteAnswer ToQuoteAnswer(this QuoteAnswerViewModel viewModel)
         {
@@ -30,7 +37,7 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                     answer.AuthorId = id;
                     break;
                 case { FullName: { } name }:
-                    answer.Author = new Author() {Name = name};
+                    answer.Author = new Author() { Name = name };
                     break;
                 default:
                     throw new InvalidOperationException("Author id or name should not be null");
@@ -41,8 +48,8 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
 
         public static Author ToAuthor(this QuoteAuthor author) => author switch
         {
-            { Id: { } id } => new Author {Id = id},
-            { FullName: { } name } => new Author() {Name = name},
+            { Id: { } id } => new Author { Id = id },
+            { FullName: { } name } => new Author() { Name = name },
             _ => throw new InvalidOperationException("Author id or name should not be null")
         };
 
@@ -71,6 +78,46 @@ namespace DVL_QuoteQuiz.WebUI.Extensions
                 YesNoQuestion = inGameQuote.AnswersCount == 1,
                 AnsweredDateTime = DateTime.Now,
                 AnsweredRight = answeredRight
+            };
+
+        public static List<ListQuoteResponse> ToListQuoteResponses(this IEnumerable<Quote> quotes) =>
+            quotes.Select(q => q.ToListQuoteResponse()).ToList();
+
+        public static ListQuoteResponse ToListQuoteResponse(this Quote quote) =>
+            new ListQuoteResponse
+            {
+                QuoteId = quote.Id,
+                QuoteText = quote.Text,
+                AuthorName = quote.QuoteAnswers
+                    .Where(q => q.IsRightAnswer)
+                    .Select(ans => ans.Author.Name)
+                    .FirstOrDefault(),
+                IsDeleted = quote.IsDeleted
+            };
+
+        public static AddEditQuoteRequest ToAddEditRequest(this Quote quote) =>
+            new AddEditQuoteRequest
+            {
+                QuoteText = quote.Text,
+                Answers = quote.QuoteAnswers.ToQuoteAnswerViewModels().ToList()
+            };
+
+        public static IEnumerable<QuoteAnswerViewModel>
+            ToQuoteAnswerViewModels(this IEnumerable<QuoteAnswer> answers) =>
+            answers.Select(ans => ans.ToQuoteAnswerViewModel());
+
+        public static QuoteAnswerViewModel ToQuoteAnswerViewModel(this QuoteAnswer answer) =>
+            new QuoteAnswerViewModel
+            {
+                IsRightAnswer = answer.IsRightAnswer,
+                Author = answer.Author.ToQuoteAuthor()
+            };
+
+        public static QuoteAuthor ToQuoteAuthor(this Author author) =>
+            new QuoteAuthor
+            {
+                Id = author.Id,
+                FullName = author.Name
             };
 
     }

@@ -1,0 +1,38 @@
+<h1>List of Quotes</h1>
+<hr/>
+
+<table>
+  <tr>
+    <th>Index</th>
+    <th>Text</th>
+    <th>Author</th>
+  </tr>
+  <tr *ngFor="let quote of quotesList; let i = index">
+    <td>{{i}}</td>
+    <td>{{quote.quoteText}}</td>
+    <td>{{quote.authorName}}</td>
+    <td>
+      <button type="button"
+              class="btn btn-success"
+              (click)="onEdit(i)">
+        Edit
+      </button>
+    </td>
+    <td>
+      <div *ngIf="!quote.isDeleted; else restore">
+        <button type="button"
+                class="btn btn-danger"
+                (click)="onDelete(i)">
+          Delete
+        </button>
+      </div>
+      <ng-template #restore>
+        <button type="button"
+                class="btn btn-warning"
+                (click)="onRestore(i)">
+          Restore
+        </button>
+      </ng-template>
+    </td>
+  </tr>
+</table>

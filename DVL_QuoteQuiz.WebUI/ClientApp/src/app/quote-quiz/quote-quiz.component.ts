@@ -9,7 +9,7 @@ import { CookieService } from 'ngx-cookie-service'
   templateUrl: './quote-quiz.component.html'
 })
 export class QuoteQuizComponent implements OnInit {
-  multipleAnswersQuiz: boolean;
+  multipleAnswersQuiz: boolean = true;
 
   currentQuote: InGameQuote;
 
